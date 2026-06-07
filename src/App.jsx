@@ -179,7 +179,7 @@ function App() {
                       <div className="card project-card fade-in">
                           <div className="project-header">
                               <h3>Chess Arena</h3>
-                              <a href="#" className="project-link"><i className="ph ph-arrow-up-right"></i></a>
+                              <a href="https://github.com/jeet1703/Chess" className="project-link"><i className="ph ph-arrow-up-right"></i></a>
                           </div>
                           <p className="project-desc">A full-stack real-time multiplayer chess platform using WebSockets for bidirectional communication and sub-second move propagation.</p>
                           <ul className="task-list">
@@ -196,7 +196,7 @@ function App() {
                       <div className="card project-card fade-in">
                           <div className="project-header">
                               <h3>WebVizion</h3>
-                              <a href="#" className="project-link"><i className="ph ph-arrow-up-right"></i></a>
+                              <a href="https://github.com/jeet1703/RUM" className="project-link"><i className="ph ph-arrow-up-right"></i></a>
                           </div>
                           <p className="project-desc">A backend-driven Real User Monitoring (RUM) platform to ingest, process, and analyse frontend performance metrics.</p>
                           <ul className="task-list">
@@ -268,7 +268,7 @@ function App() {
                           <span>AWS Cloud Practitioner</span>
                       </div>
                       <div className="cert-item">
-                          <i className="ph ph-api"></i>
+                          <i className="ph ph-webhooks-logo"></i>
                           <span>Postman API Fundamentals</span>
                       </div>
                       <div className="cert-item">
