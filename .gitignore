@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Design / Reference Assets
+Terminal Portfolio.html
+Terminal Portfolio.pdf
+Terminal Portfolio.*
