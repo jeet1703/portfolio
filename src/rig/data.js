@@ -100,7 +100,7 @@ export const PROJECTS = [
       'Reconnects automatically after a dropped connection, validates on both client and server, and shows clear game-over states.',
     ],
     links: [['Play it live ↗', 'https://chess-prabjeet.netlify.app'], ['GitHub ↗', 'https://github.com/jeet1703/Chess']],
-    media: [{ title: 'Live site', src: '/media/chess.png', type: 'image', href: 'https://chess-prabjeet.netlify.app' }, { title: 'Live match', scene: 'chess' }, { title: 'Matchmaking & reconnect', scene: 'match' }],
+    media: [{ title: 'Live match', scene: 'chess' }, { title: 'Matchmaking & reconnect', scene: 'match' }],
   },
   {
     name: 'WebVizion', kind: 'Real User Monitoring backend', tech: ['Java', 'Spring Boot', 'Microservices', 'Docker', 'REST'],
@@ -110,7 +110,7 @@ export const PROJECTS = [
       'Every service is containerized with Docker.',
     ],
     links: [['Live dashboard ↗', 'https://webvizion.netlify.app'], ['Demo app ↗', 'https://webvizion-demo.netlify.app'], ['GitHub ↗', 'https://github.com/jeet1703/webvision']],
-    media: [{ title: 'Live dashboard', src: '/media/webvizion.png', type: 'image', href: 'https://webvizion.netlify.app' }, { title: 'Monitoring preview', scene: 'rum' }, { title: 'Batching pipeline', scene: 'batch' }],
+    media: [{ title: 'Monitoring dashboard', scene: 'rum' }, { title: 'Batching pipeline', scene: 'batch' }],
   },
   {
     name: 'EquipControl', kind: 'Supervisory control application', tech: ['C++', 'Qt', 'CMake', 'GoogleTest'],

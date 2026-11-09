@@ -21,20 +21,30 @@ main,#power,footer{position:relative;z-index:2}
 #cable .cable-line{fill:none;stroke-linecap:round;stroke-linejoin:round}
 
 /* ---------- nav ---------- */
-nav.top{position:fixed;inset:0 0 auto 0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:12px;
-  padding:14px 28px;background:rgba(241,236,225,.97);border-bottom:1px solid rgba(0,0,0,.07)}
-.brand{font-weight:800;letter-spacing:.06em;font-size:18px;text-decoration:none;display:flex;align-items:center;gap:10px}
-.brand .dot{width:10px;height:10px;border-radius:50%;background:#7d766a;box-shadow:inset 0 1px 2px rgba(0,0,0,.4);transition:.4s}
-body.on .brand .dot{background:var(--led);box-shadow:0 0 10px var(--led)}
-nav.top ul{display:flex;gap:6px;list-style:none}
-.k{font-family:var(--mono);font-size:12px;text-decoration:none;padding:6px 10px;border-radius:7px;border:0;cursor:pointer;color:var(--ink);
-  background:linear-gradient(#faf7f0,#e7e0d0);box-shadow:0 3px 0 var(--beige-dd);display:inline-flex;gap:7px;align-items:center;transition:transform .08s, box-shadow .08s}
-.k b{font-weight:700;color:var(--accent-d)}
-.k:active,.k.active{transform:translateY(2px);box-shadow:0 1px 0 var(--beige-dd)}
-.k.active{background:linear-gradient(#ffe7dc,#ffd4c2)}
-.right{display:flex;align-items:center;gap:14px}
-.status{font-family:var(--mono);font-size:11.5px;display:flex;align-items:center;gap:8px;color:var(--ink-2)}
-.status i{width:8px;height:8px;border-radius:50%;background:var(--led);box-shadow:0 0 8px var(--led);animation:blink 2.4s infinite}
+/* navbar: name on the left, a segmented pill switcher in the middle whose dark pill slides to the
+   current section, and status + sound pills on the right */
+nav.top{position:fixed;inset:0 0 auto 0;z-index:50;height:60px;display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:0 28px;background:rgba(241,236,225,.97);border-bottom:1px solid rgba(29,27,24,.09)}
+.brand{font-family:var(--sans);font-weight:700;font-size:16px;letter-spacing:-.01em;text-decoration:none;display:flex;align-items:center;gap:10px;color:var(--ink)}
+.brand-psu{position:relative;width:30px;height:20px;border-radius:5px;background:linear-gradient(#3a3733,#24221f);box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 2px 4px rgba(0,0,0,.18);
+  display:flex;align-items:center;justify-content:center;gap:5px}
+.brand-psu i{width:5px;height:5px;border-radius:50%;background:#6b655c;transition:background .4s,box-shadow .4s}
+.brand-psu i:first-child{background:var(--accent)}
+body.on .brand-psu i:last-child{background:var(--led);box-shadow:0 0 6px var(--led)}
+.seg{position:absolute;left:50%;transform:translateX(-50%);display:flex;gap:2px;list-style:none;padding:4px;border-radius:12px;
+  background:#e7e0d1;border:1px solid rgba(29,27,24,.08);box-shadow:inset 0 1px 2px rgba(0,0,0,.05)}
+.seg .pill{position:absolute;top:4px;bottom:4px;left:0;width:0;border-radius:8px;background:linear-gradient(#ff7a52,#f2552a);box-shadow:0 2px 0 var(--accent-d),0 4px 10px rgba(242,85,42,.3);
+  transition:transform .38s cubic-bezier(.3,1.3,.5,1),width .38s cubic-bezier(.3,1.3,.5,1);pointer-events:none}
+.seg a{position:relative;z-index:1;display:block;padding:7px 14px;border-radius:8px;font-family:var(--sans);font-size:14px;font-weight:500;color:var(--ink-2);text-decoration:none;transition:color .25s}
+.seg a:hover{color:var(--ink)}
+.seg a.active{color:#fff}
+.seg a:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.right{display:flex;align-items:center;gap:8px}
+.npill{font-family:var(--sans);font-size:13px;font-weight:500;color:var(--ink);display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border-radius:10px;
+  background:#e7e0d1;border:1px solid rgba(29,27,24,.08);text-decoration:none;cursor:pointer}
+button.npill{appearance:none}
+button.npill:hover{background:#ded6c4}
+.status i{width:7px;height:7px;border-radius:50%;background:var(--led);box-shadow:0 0 6px var(--led);animation:blink 2.4s infinite}
 #sndBtn .eq{display:inline-flex;gap:2px;align-items:flex-end;height:11px}
 #sndBtn .eq i{width:2px;background:var(--accent-d);height:4px}
 body.snd #sndBtn .eq i{animation:eq .9s ease-in-out infinite}
@@ -197,8 +207,8 @@ body.on .psu .fan2{animation:spin .6s linear infinite}
 .key.w2{flex-grow:1.7}.key.w3{flex-grow:2.4}.key.space{flex-grow:6}
 .key.mod{background:linear-gradient(#8f877a,#7a7366);color:#f5efe2;box-shadow:0 5px 0 #4f4a41,0 7px 10px rgba(0,0,0,.2)}
 .key.mod small{color:#d8d0c0}
-.key.hot{background:linear-gradient(#ff7a52,#f2552a);color:#fff;box-shadow:0 5px 0 #a73a17,0 7px 10px rgba(0,0,0,.2)}
-.key.hot small{color:#ffe0d4}
+.key.hot{background:linear-gradient(#ff7a52,#f2552a);color:#2b0c02;font-weight:700;box-shadow:0 5px 0 #a73a17,0 7px 10px rgba(0,0,0,.2)}
+.key.hot small{color:rgba(58,16,4,.72)}
 .key:hover{filter:brightness(1.04)}
 .key:active,.key.down{transform:translateY(4px);box-shadow:0 1px 0 #a99e85,0 2px 4px rgba(0,0,0,.18)}
 .key.mod:active,.key.mod.down{box-shadow:0 1px 0 #4f4a41}
@@ -212,14 +222,20 @@ body.has3d .keyboard{position:absolute!important;width:1px;height:1px;overflow:h
 /* smaller keyboard: it sits on a narrower desk instead of filling the page */
 .kb-desk{max-width:820px;margin:0 auto}
 .kb-stage{position:relative}
-/* "click me" cue on the keyboard: rings on the first key, tag above it */
-.kcue{position:absolute;left:60px;top:36px;width:0;height:0;pointer-events:none;z-index:3}
-body:not(.has3d) .kcue{top:-6px;left:50px}
-.kcue i{position:absolute;left:-22px;top:-22px;width:44px;height:44px;border-radius:50%;border:2.5px solid var(--accent);animation:ring 1.5s ease-out infinite}
-.kcue i.r2{animation-delay:.75s}
-.kcue span{position:absolute;left:18px;bottom:22px;display:flex;flex-direction:column;padding:5px 9px;background:var(--paper);border:1.5px solid var(--accent);border-radius:8px;box-shadow:3px 3px 0 var(--accent-d);white-space:nowrap;transform:rotate(-3deg);animation:bob 1.2s ease-in-out infinite}
-.kcue b{font-family:var(--sans);font-weight:800;font-size:16px;line-height:1;color:var(--accent)}
-.kcue small{font-family:var(--mono);font-size:10px;color:var(--ink-2);margin-top:3px}
+/* hand-drawn "click the keys" cue: a sketchy cursor keeps tapping the first key */
+.kcue{position:absolute;left:60px;top:36px;width:0;height:0;pointer-events:none;z-index:3;--hand:'Caveat',cursive}
+body:not(.has3d) .kcue{top:30px;left:44px}
+.kc-cursor{position:absolute;left:-4px;top:-4px;overflow:visible;transform-origin:4px 4px;animation:kcTap 1.6s cubic-bezier(.5,0,.3,1) infinite}
+.kc-cursor path{fill:var(--paper);stroke:var(--accent-d);stroke-width:2.6;stroke-linejoin:round;stroke-linecap:round;
+  stroke-dasharray:140;stroke-dashoffset:140;animation:kcDraw .9s ease-out .2s forwards}
+.kc-tap{position:absolute;left:-18px;top:-18px;width:36px;height:36px;border-radius:50%;border:2.5px solid var(--accent);opacity:0;animation:kcRing 1.6s ease-out infinite}
+.kc-text{position:absolute;left:38px;top:-34px;font-family:var(--hand);font-weight:600;font-size:27px;line-height:1;color:var(--accent-d);white-space:nowrap;
+  transform-origin:0 100%;animation:kcWrite .9s steps(14,end) .3s both,kcWobble 2.4s ease-in-out 1.2s infinite}
+@keyframes kcTap{0%,100%{transform:translate(16px,18px) rotate(-4deg)}38%{transform:translate(0,0) rotate(0)}46%{transform:translate(0,0) scale(.86)}56%{transform:translate(0,0) scale(1)}}
+@keyframes kcRing{0%,40%{opacity:0;transform:scale(.4)}46%{opacity:1;transform:scale(.5)}80%,100%{opacity:0;transform:scale(1.5)}}
+@keyframes kcDraw{to{stroke-dashoffset:0}}
+@keyframes kcWrite{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes kcWobble{0%,100%{transform:rotate(-7deg)}50%{transform:rotate(-4deg) translateY(-2px)}}
 .sr-only{position:absolute!important;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 .kb-note{font-family:var(--mono);font-size:12.5px;color:var(--muted);margin-top:22px}
 
@@ -295,6 +311,8 @@ body:not(.has3d) .kcue{top:-6px;left:50px}
 .proj li{padding-left:22px;position:relative;color:#34302b}
 .proj li::before{content:"›";position:absolute;left:4px;top:-1px;color:var(--accent);font-weight:800}
 .links{display:flex;gap:12px;margin-top:24px;flex-wrap:wrap}
+.links.top{margin:14px 0 18px}
+.links.top .btnlink{padding:8px 14px;font-size:12.5px}
 .btnlink{font-family:var(--mono);font-size:13px;font-weight:700;text-decoration:none;padding:10px 16px;border-radius:9px;border:1.5px solid var(--ink);box-shadow:3px 3px 0 var(--ink);background:#fff;transition:transform .08s,box-shadow .08s}
 .btnlink:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
 .btnlink:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
@@ -382,7 +400,8 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
   .rig{margin:10px 0 0;width:calc(100% - 14px)}
   .mousepad{position:relative;top:0}
   .thumbs{gap:7px}
-  nav.top ul,.status{display:none}
+  .seg,.status{display:none}
+  nav.top{padding:0 18px}
   .krow{flex-wrap:wrap}
   .key{flex:1 1 30%;height:54px}
   .key.space{flex-basis:100%}

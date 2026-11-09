@@ -60,11 +60,24 @@ export function createPsu(host, { onToggle, onLayout }) {
   const led = new THREE.Mesh(new THREE.SphereGeometry(.05, 16, 12), ledMat); led.position.set(1.52, -.5, .32); rig3.add(led);
   const ledLight = new THREE.PointLight(0x3ddc5c, 0, 1.5); ledLight.position.set(1.7, -.5, .32); rig3.add(ledLight);
 
+  // front power LED: dark green when off, bright green with a soft halo when on
+  const fLedMat = new THREE.MeshStandardMaterial({ color: 0x0f2a14, roughness: .25, emissive: 0x000000 });
+  const fLed = new THREE.Mesh(new THREE.SphereGeometry(.055, 20, 14), fLedMat); fLed.position.set(1.33, .58, 1.2); fLed.scale.z = .6; rig3.add(fLed);
+  const fRing = new THREE.Mesh(new THREE.TorusGeometry(.068, .014, 8, 32), chrome); fRing.position.set(1.33, .58, 1.205); rig3.add(fRing);
+  const hc = document.createElement('canvas'); hc.width = hc.height = 64; const hg = hc.getContext('2d');
+  const grd = hg.createRadialGradient(32, 32, 0, 32, 32, 32); grd.addColorStop(0, 'rgba(120,255,140,1)'); grd.addColorStop(.25, 'rgba(61,220,92,.55)'); grd.addColorStop(1, 'rgba(61,220,92,0)');
+  hg.fillStyle = grd; hg.fillRect(0, 0, 64, 64);
+  const haloTex = new THREE.CanvasTexture(hc);
+  const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: haloTex, color: 0xffffff, transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending }));
+  halo.position.set(1.33, .58, 1.24); halo.scale.set(.42, .42, 1); rig3.add(halo);
+  const fLedLight = new THREE.PointLight(0x3ddc5c, 0, 1.2); fLedLight.position.set(1.33, .58, 1.45); rig3.add(fLedLight);
+
   // the output cable: leaves the front, drops out of frame and becomes the page cable
+  const TUBE_R = .048;
   const cableMat = new THREE.MeshStandardMaterial({ color: 0x1d1b18, roughness: .55 });
-  const conn = new THREE.Mesh(new RoundedBoxGeometry(.42, .24, .2, 3, .04), new THREE.MeshStandardMaterial({ color: 0x2a2825, roughness: .6 })); conn.position.set(-.85, -.45, 1.28); rig3.add(conn);
+  const conn = new THREE.Mesh(new RoundedBoxGeometry(.3, .18, .2, 3, .04), new THREE.MeshStandardMaterial({ color: 0x2a2825, roughness: .6 })); conn.position.set(-.85, -.45, 1.28); rig3.add(conn);
   const curve = new THREE.CatmullRomCurve3([new THREE.Vector3(-.85, -.45, 1.36), new THREE.Vector3(-.85, -.5, 1.75), new THREE.Vector3(-.8, -1.3, 2.05), new THREE.Vector3(-.7, -3, 2.15), new THREE.Vector3(-.65, -9, 2.15)]);
-  const tube = new THREE.Mesh(new THREE.TubeGeometry(curve, 120, .075, 16), cableMat); tube.castShadow = true; rig3.add(tube);
+  const tube = new THREE.Mesh(new THREE.TubeGeometry(curve, 120, TUBE_R, 16), cableMat); tube.castShadow = true; rig3.add(tube);
 
   shadowFloor(scene, -1.32, 14, .22);
 
@@ -146,17 +159,27 @@ export function createPsu(host, { onToggle, onLayout }) {
     fitTerm();
   }
   // find where the 3D cable crosses the bottom edge of the canvas, in page pixels
+  // Measured from the PSU's rest pose (rig3 at the origin, unscaled), not its current pose: the
+  // cable gets rebuilt right after a click, while the PSU is still mid-hop and squashed.
   function cableStart() {
     const rect = host.getBoundingClientRect(); if (!rect.width) return null;
-    const v = new THREE.Vector3(), prev = { x: 0, y: 0 };
+    // start the page wire a little inside the canvas so it tucks under the 3D cable (the canvas
+    // is drawn on top), so there's never a visible seam at the edge
+    const v = new THREE.Vector3(), prev = { x: 0, y: 0 }, edgeY = Hh - 18;
     for (let i = 0; i <= 300; i++) {
-      v.copy(curve.getPoint(i / 300)).applyMatrix4(rig3.matrixWorld).project(cam);
+      v.copy(curve.getPoint(i / 300)).project(cam);
       const sx = (v.x + 1) / 2 * W, sy = (1 - v.y) / 2 * Hh;
-      if (sy >= Hh) {
-        const k = i ? (Hh - prev.y) / (sy - prev.y) : 0, x = prev.x + (sx - prev.x) * k;
-        const p = curve.getPoint(i / 300).applyMatrix4(rig3.matrixWorld), a = p.clone().project(cam), b = p.clone().add(new THREE.Vector3(.075, 0, 0)).project(cam);
-        const w = Math.abs((b.x - a.x) / 2 * W) * 2;
-        return { x: rect.left + scrollX + x, y: rect.top + scrollY + Hh - 1, w };
+      if (sy >= edgeY) {
+        const k = i ? (edgeY - prev.y) / (sy - prev.y) : 0, x = prev.x + (sx - prev.x) * k;
+        // on-screen thickness: measure the tube's diameter across the camera's view, not along
+        // the world x axis (that gets foreshortened by the camera angle)
+        const p = curve.getPoint(i / 300);
+        const across = new THREE.Vector3().setFromMatrixColumn(cam.matrixWorld, 0).multiplyScalar(TUBE_R);
+        const a = p.clone().sub(across).project(cam), b = p.clone().add(across).project(cam);
+        const w = Math.hypot((b.x - a.x) / 2 * W, (b.y - a.y) / 2 * Hh);
+        // and which way it's heading as it leaves the canvas, so the page wire carries on smoothly
+        const dx = sx - prev.x, dy = sy - prev.y, dl = Math.hypot(dx, dy) || 1;
+        return { x: rect.left + scrollX + x, y: rect.top + scrollY + edgeY, w, dx: dx / dl, dy: dy / dl };
       }
       prev.x = sx; prev.y = sy;
     }
@@ -184,6 +207,8 @@ export function createPsu(host, { onToggle, onLayout }) {
     rock += ((on ? .22 : -.22) - rock) * Math.min(1, dt * 18); rocker.rotation.z = rock;
     glow += ((on ? 1 : 0) - glow) * Math.min(1, dt * 4);
     ledMat.emissive.setRGB(.24 * glow, .86 * glow, .36 * glow); ledLight.intensity = glow * 1.2;
+    const fl = glow * (rig.reduce ? 1 : .94 + Math.sin(t * 7.3) * .03 + Math.sin(t * 17.1) * .03); // faint flicker
+    fLedMat.emissive.setRGB(.3 * fl, 1.1 * fl, .42 * fl); halo.material.opacity = fl * .9; fLedLight.intensity = fl * .9;
     markOn.emissive.setRGB(glow, .36 * glow, .18 * glow);
     hubMat.emissive.setRGB(.35 * glow, .1 * glow, .03 * glow);
     const hv = hover && !rig.reduce ? 1 : 0;
@@ -219,7 +244,7 @@ export function createPsu(host, { onToggle, onLayout }) {
     dispose() {
       stop(); ro.disconnect();
       if (rig.cableStart === cableStart) rig.cableStart = null;
-      tex.dispose(); ttex.dispose(); disposeAll(scene, r);
+      tex.dispose(); ttex.dispose(); haloTex.dispose(); disposeAll(scene, r);
     },
   };
 }

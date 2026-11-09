@@ -61,24 +61,34 @@ S.spool = function (v) {
   this.zip.f.frequency.setTargetAtTime(700 + Math.min(2600, v * 55), t, .06);
 };
 
+// PSU hum: no air/noise. A warm mains hum plus a soft "motor" tone that spins up in pitch when
+// the fan starts, gently wavers while running, and winds down when power goes off.
 S.humStart = function (quiet) {
   if (!this.ctx || this.hum) return; const c = this.ctx, t = c.currentTime;
-  const out = c.createGain(); out.gain.setValueAtTime(.0001, t); out.gain.exponentialRampToValueAtTime(.35, t + .8); out.connect(this.master); // fan/hum kept quiet
+  const out = c.createGain(); out.gain.setValueAtTime(.0001, t); out.gain.exponentialRampToValueAtTime(.35, t + .8); out.connect(this.master);
+  // mains hum: a 50 Hz sine with a softened 100 Hz buzz on top
   const o1 = c.createOscillator(); o1.type = 'sawtooth'; o1.frequency.value = 100;
   const lp = c.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 240;
-  const g1 = c.createGain(); g1.gain.value = .016; o1.connect(lp).connect(g1).connect(out);
+  const g1 = c.createGain(); g1.gain.value = .012; o1.connect(lp).connect(g1).connect(out);
   const o2 = c.createOscillator(); o2.type = 'sine'; o2.frequency.value = 50; const g2 = c.createGain(); g2.gain.value = .022; o2.connect(g2).connect(out);
-  const n = c.createBufferSource(); n.buffer = this.noise; n.loop = true;
-  const bp = c.createBiquadFilter(); bp.type = 'bandpass'; bp.Q.value = .7; bp.frequency.setValueAtTime(quiet ? 520 : 160, t); bp.frequency.exponentialRampToValueAtTime(520, t + 1.6);
-  const g3 = c.createGain(); g3.gain.setValueAtTime(quiet ? .008 : .0001, t); g3.gain.exponentialRampToValueAtTime(.028, t + 1.4); g3.gain.exponentialRampToValueAtTime(.008, t + 4.5);
-  n.connect(bp).connect(g3).connect(out);
-  o1.start(); o2.start(); n.start();
-  this.hum = { out, bp, nodes: [o1, o2, n] };
+  // motor: two slightly detuned triangles (a slow, pleasant beat) through a soft lowpass
+  const SPIN = 196, from = quiet ? SPIN : 70;
+  const m1 = c.createOscillator(); m1.type = 'triangle'; m1.frequency.setValueAtTime(from, t); m1.frequency.exponentialRampToValueAtTime(SPIN, t + 1.8);
+  const m2 = c.createOscillator(); m2.type = 'triangle'; m2.frequency.setValueAtTime(from * 1.006, t); m2.frequency.exponentialRampToValueAtTime(SPIN * 1.006, t + 1.8);
+  const mlp = c.createBiquadFilter(); mlp.type = 'lowpass'; mlp.frequency.value = 520; mlp.Q.value = .5;
+  const mg = c.createGain(); mg.gain.setValueAtTime(quiet ? .016 : .0001, t); mg.gain.exponentialRampToValueAtTime(.03, t + 1.4); mg.gain.exponentialRampToValueAtTime(.016, t + 4.5);
+  // a slow wobble in brightness so it breathes instead of droning flat
+  const lfo = c.createOscillator(); lfo.frequency.value = .18; const lfoG = c.createGain(); lfoG.gain.value = 140;
+  lfo.connect(lfoG).connect(mlp.frequency);
+  m1.connect(mlp); m2.connect(mlp); mlp.connect(mg).connect(out);
+  [o1, o2, m1, m2, lfo].forEach(o => o.start());
+  this.hum = { out, motors: [m1, m2], nodes: [o1, o2, m1, m2, lfo] };
 };
 S.humStop = function () {
   if (!this.hum) return; const c = this.ctx, t = c.currentTime, h = this.hum; this.hum = null;
-  h.bp.frequency.setTargetAtTime(90, t, .35); h.out.gain.setTargetAtTime(.0001, t, .3);
-  h.nodes.forEach(nd => { try { nd.stop(t + 1.6); } catch { /* already stopped */ } });
+  h.motors.forEach(m => m.frequency.setTargetAtTime(55, t, .45)); // spin down
+  h.out.gain.setTargetAtTime(.0001, t, .4);
+  h.nodes.forEach(nd => { try { nd.stop(t + 2); } catch { /* already stopped */ } });
 };
 S.setEnabled = function (on) {
   this.enabled = on;

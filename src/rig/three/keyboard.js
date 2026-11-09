@@ -19,15 +19,17 @@ export function createKeyboard(host, keys, { onHover, onPress, onCue }) {
     const cap = new THREE.Mesh(new RoundedBoxGeometry(w, KH, KD, 3, .12), mat); cap.castShadow = true; cap.receiveShadow = true;
     // printed legend
     const pxU = 120, c = document.createElement('canvas'); c.width = Math.round(w * pxU); c.height = Math.round(KD * pxU);
-    const g = c.getContext('2d'), dark = k.kind === 'hot' || k.kind === 'mod';
-    g.fillStyle = dark ? (k.kind === 'hot' ? 'rgba(255,224,212,.9)' : 'rgba(230,222,206,.9)') : '#8a8274';
+    // legends: dark ink on orange keys (white washed out under the lighting), light on grey keys
+    const g = c.getContext('2d'), hot = k.kind === 'hot', mod = k.kind === 'mod';
+    g.fillStyle = hot ? 'rgba(58,16,4,.72)' : mod ? 'rgba(240,233,220,.85)' : '#8a8274';
     g.font = '600 17px "JetBrains Mono", monospace'; g.fillText(k.cat.split(' ')[0].toUpperCase(), 16, 30);
-    g.fillStyle = dark ? '#ffffff' : '#2a2722';
-    let fs = 30; g.font = '600 ' + fs + 'px "JetBrains Mono", monospace';
-    while (g.measureText(k.label).width > c.width - 30 && fs > 14) { fs--; g.font = '600 ' + fs + 'px "JetBrains Mono", monospace'; }
+    g.fillStyle = hot ? '#2b0c02' : mod ? '#ffffff' : '#2a2722';
+    const wt = hot ? '700 ' : '600 ';
+    let fs = 30; g.font = wt + fs + 'px "JetBrains Mono", monospace';
+    while (g.measureText(k.label).width > c.width - 30 && fs > 14) { fs--; g.font = wt + fs + 'px "JetBrains Mono", monospace'; }
     g.fillText(k.label, 16, c.height - 22);
     const tex = new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 8; textures.push(tex);
-    const lab = new THREE.Mesh(new THREE.PlaneGeometry(w - .16, KD - .16), new THREE.MeshBasicMaterial({ map: tex, transparent: true }));
+    const lab = new THREE.Mesh(new THREE.PlaneGeometry(w - .16, KD - .16), new THREE.MeshBasicMaterial({ map: tex, transparent: true, toneMapped: false }));
     lab.rotation.x = -Math.PI / 2; lab.position.y = KH / 2 + .002;
     const grp = new THREE.Group(); grp.add(cap); grp.add(lab); board.add(grp);
     cap.userData.i = i;

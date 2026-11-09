@@ -41,7 +41,7 @@ export default function Keys({ live, on, has3d, apiRef }) {
     let dead = false;
     document.fonts.ready.then(() => {
       if (dead) return;
-      kb3d.current = createKeyboard(host.current, KEYS, { onHover: show, onPress: press, onCue: setCue });
+      kb3d.current = createKeyboard(host.current, KEYS, { onHover: () => {}, onPress: press, onCue: setCue });
       if (selRef.current >= 0) kb3d.current.select(selRef.current);
     });
     return () => { dead = true; kb3d.current?.dispose(); kb3d.current = null; };
@@ -66,7 +66,7 @@ export default function Keys({ live, on, has3d, apiRef }) {
       <div className="wrap">
         <div className="tag">03 · Keyboard</div>
         <h2>Every key is something I use.</h2>
-        <p className="lede">Hover or tap a key to see where I've used it. On a computer you can also type on your own keyboard: each letter presses a matching key.</p>
+        <p className="lede">Click or tap a key to see where I've used it. On a computer you can also type on your own keyboard: each letter presses a matching key.</p>
         <div className="kb-desk">
           <div className="kb-screen" aria-live="polite">
             <div className="cat">{cat}</div>
@@ -77,8 +77,11 @@ export default function Keys({ live, on, has3d, apiRef }) {
             <div id="kb3d" ref={host} aria-hidden="true"></div>
             {!used && (
               <div className="kcue" aria-hidden="true" style={has3d && cue ? { left: cue.x, top: cue.y } : undefined}>
-                <i></i><i className="r2"></i>
-                <span><b>CLICK ME</b><small>every key is clickable</small></span>
+                <i className="kc-tap"></i>
+                <svg className="kc-cursor" viewBox="0 0 40 46" width="40" height="46">
+                  <path d="M4 4 L7.5 36.5 L15.5 28 L23 42 L30 38.5 L22.5 24.5 L34.5 22.5 Z" />
+                </svg>
+                <span className="kc-text">click the keys</span>
               </div>
             )}
           </div>
@@ -89,7 +92,7 @@ export default function Keys({ live, on, has3d, apiRef }) {
                   <button key={k.label}
                     className={['key', k.kind, k.w, sel === i && 'sel', down === i && 'down'].filter(Boolean).join(' ')}
                     title={k.label}
-                    onMouseEnter={() => show(i)} onFocus={() => show(i)} onClick={() => press(i)}>
+                    onClick={() => press(i)}>
                     <small>{k.cat.split(' ')[0].toUpperCase()}</small><span>{k.label}</span>
                   </button>
                 ))}

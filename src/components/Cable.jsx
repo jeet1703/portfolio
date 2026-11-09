@@ -19,6 +19,7 @@ function buildPath(start, W) {
 
   let x = start.x, y = start.y, side = Lx;
   const exits = [];
+  const lead = start.dx !== undefined && start.dy > .2; // continue the 3D cable's heading
   // Path builder. Alongside the SVG string it records a polyline of the same curve so we never
   // have to ask the browser for getPointAtLength (that was ~2 ms per call on this path).
   let d = 'M' + P(x, y), px = x, py = y;
@@ -65,6 +66,12 @@ function buildPath(start, W) {
     const tx = last ? Rx : side;
     const yIn = top - (mob ? 62 : 86), yOut = top + (mob ? 76 : 104);
     const r1 = R, by = top + (mob ? 14 : 26) + r1;
+    if (lead && i === 0 && yIn > y + 40) {
+      // leave the canvas edge on the 3D cable's own heading, then ease into a straight drop
+      const k = Math.min(120, (yIn - y) * .5), ex = x + start.dx / start.dy * k * .5;
+      Cc(x + start.dx * k * .45, y + start.dy * k * .45, ex, y + k * .55, ex, y + k);
+      x = ex; y += k;
+    }
     if (yIn > y) { Ln(x, yIn); y = yIn; }
     let dir = tx >= x ? 1 : -1, cx;
     if (Math.abs(tx - x) < 80) { dir = x > W / 2 ? -1 : 1; cx = x + dir * (R * 3.2); }
@@ -133,7 +140,7 @@ export default function Cable({ onLive, onPlugged }) {
       // start where the 3D cable leaves its canvas (or under the fallback PSU)
       let s = rig.cableStart && rig.cableStart();
       if (!s) { const r = document.querySelector('.psu-wrap').getBoundingClientRect(); s = { x: r.left + r.width * .35, y: r.bottom - 30 + scrollY, w: 14 }; }
-      cableW = W <= 920 ? 8 : Math.max(8, Math.min(20, s.w || 14));
+      cableW = W <= 920 ? 8 : Math.max(8, Math.min(30, s.w || 14));
       // on phones the PSU sits above the intro text, so the cable drops in from the right margin instead
       if (W <= 920) {
         const hb = document.getElementById('power').getBoundingClientRect();

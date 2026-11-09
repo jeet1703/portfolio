@@ -67,14 +67,14 @@ export default function Projects({ live, on, has3d, apiRef }) {
             <div className="monitor-screen">
               <div className="win-bar"><i></i><i></i><i></i><span>~/projects/{pr.name.toLowerCase().replace(/\s+/g, '-')}</span></div>
               <div className="proj" key={proj} style={{ '--dx': dir < 0 ? '-24px' : '24px' }}>
-                <Player pr={pr} />
                 <div className="num">{pad2(proj + 1)} / {pad2(N)}</div>
                 <h3>{pr.name}</h3><div className="kind">{pr.kind}</div>
+                {pr.links.length > 0 && (
+                  <div className="links top">{pr.links.map(([t, u], i) => <a key={u} className={'btnlink' + (i === 0 ? ' dark' : '')} href={u} target="_blank" rel="noopener">{t}</a>)}</div>
+                )}
+                <Player pr={pr} />
                 <div className="chips">{pr.tech.map(t => <span className="chip" key={t}>{t}</span>)}</div>
                 <ul>{pr.points.map(x => <li key={x}>{x}</li>)}</ul>
-                {pr.links.length > 0 && (
-                  <div className="links">{pr.links.map(([t, u]) => <a key={u} className="btnlink" href={u} target="_blank" rel="noopener">{t}</a>)}</div>
-                )}
               </div>
             </div>
           </div>

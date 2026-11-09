@@ -1,24 +1,38 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useLayoutEffect, useRef } from 'react';
 import { SECTIONS } from '../rig/bus';
 import S from '../rig/sound';
 
 export function Nav({ section, soundOn, onSound, onGo }) {
+  const seg = useRef(null), pill = useRef(null);
+  // slide the dark pill under the active section's link
+  useLayoutEffect(() => {
+    const place = () => {
+      const a = seg.current?.querySelectorAll('a')[section], p = pill.current;
+      if (!a || !p) return;
+      p.style.width = a.offsetWidth + 'px'; p.style.transform = `translateX(${a.offsetLeft}px)`;
+    };
+    place();
+    addEventListener('resize', place);
+    document.fonts?.ready.then(place);
+    return () => removeEventListener('resize', place);
+  }, [section]);
   return (
     <nav className="top" aria-label="Main">
-      <a className="brand" href="#power"><span className="dot"></span>PRABHJEET</a>
-      <ul>
+      <a className="brand" href="#power" onClick={e => { e.preventDefault(); onGo(0); }}>
+        <span className="brand-psu" aria-hidden="true"><i></i><i></i></span>Prabhjeet Singh
+      </a>
+      <div className="seg" ref={seg}>
+        <span className="pill" ref={pill} aria-hidden="true"></span>
         {SECTIONS.map((s, i) => (
-          <li key={s.id}>
-            <a className={'k' + (i === section ? ' active' : '')} href={'#' + s.id}
-              onClick={e => { e.preventDefault(); S.key(); onGo(i); }}>
-              <b>{i + 1}</b>{s.nav}
-            </a>
-          </li>
+          <a key={s.id} className={i === section ? 'active' : ''} href={'#' + s.id} aria-current={i === section ? 'true' : undefined}
+            onClick={e => { e.preventDefault(); S.key(); onGo(i); }}>
+            {s.nav === 'Power' ? 'Home' : s.nav}
+          </a>
         ))}
-      </ul>
+      </div>
       <div className="right">
-        <div className="status"><i></i>Open to work</div>
-        <button className="k" id="sndBtn" aria-pressed={soundOn} onClick={onSound}>
+        <span className="npill status"><i></i>Open to work</span>
+        <button className="npill" id="sndBtn" aria-pressed={soundOn} onClick={onSound}>
           <span className="eq"><i></i><i></i><i></i></span><span>{soundOn ? 'Sound on' : 'Sound off'}</span>
         </button>
       </div>
