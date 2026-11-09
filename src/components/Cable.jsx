@@ -195,7 +195,7 @@ export default function Cable({ onLive, onPlugged }) {
     const pulseG = pulseRef.current, dots = [];
     const GAP = 340, SPEED = .13; // px between pulses, px per ms
     function movePulses(t) {
-      const on = rig.powered && drawn > 40 && !rig.reduce;
+      const on = rig.powered && drawn > 40 && !rig.reduce && !rig.touch;
       const n = on ? Math.min(80, Math.ceil(drawn / GAP)) : 0;
       while (dots.length < n) {
         const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
@@ -234,7 +234,7 @@ export default function Cable({ onLive, onPlugged }) {
     // native scrolling (touch, scrollbar, keys): hold the page at the wire, keep the intent
     const onScroll = () => {
       if (Math.abs(scrollY - setY) <= 2) return;
-      if (scrollY > limit + 2) {
+      if (!rig.touch && scrollY > limit + 2) {
         const want = Math.max(rig.wantY ?? 0, scrollY);
         rig.steerY = limit; rig.wantY = want; setScroll(limit);
       } else if (rig.wantY !== null && Math.abs(scrollY - rig.steerY) > 2) {
@@ -250,7 +250,7 @@ export default function Cable({ onLive, onPlugged }) {
       if (rig.reduce) drawn = target;
       else {
         let stepL = (target - drawn) * Math.min(1, dt * .0026);
-        const cap = dt * .85; // at most ~850 px of cable per second
+        const cap = dt * (rig.touch ? 2.6 : .85); // px of cable per ms (phones: catch up with flicks)
         stepL = Math.max(-cap, Math.min(cap, stepL));
         drawn += stepL;
       }

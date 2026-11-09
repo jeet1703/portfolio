@@ -52,6 +52,15 @@ export default function App() {
     rig.scrollTo(document.getElementById(SECTIONS[i].id).getBoundingClientRect().top + scrollY);
   }, [nudge]);
 
+  // block touch scrolling only while locked: a non-passive touchmove listener makes the phone wait
+  // for JS on every finger move, so it must not stay attached once the page is powered
+  useEffect(() => {
+    if (powered) return;
+    const onTouch = e => { e.preventDefault(); nudge(); };
+    addEventListener('touchmove', onTouch, { passive: false });
+    return () => removeEventListener('touchmove', onTouch);
+  }, [powered, nudge]);
+
   // the page stays locked until the visitor powers it on
   useEffect(() => {
     const root = document.documentElement;
@@ -71,7 +80,6 @@ export default function App() {
       const dy = e.deltaMode === 1 ? e.deltaY * 16 : e.deltaMode === 2 ? e.deltaY * innerHeight : e.deltaY;
       rig.scrollTo((rig.wantY ?? scrollY) + dy * .45);
     };
-    const onTouch = e => { if (isLocked()) { e.preventDefault(); nudge(); } };
     const onScroll = () => {
       const mid = innerHeight * .4; let idx = 0;
       SECTIONS.forEach((s, i) => { const el = document.getElementById(s.id); if (el && el.getBoundingClientRect().top <= mid) idx = i; });
@@ -92,13 +100,12 @@ export default function App() {
     };
     addEventListener('pointerdown', wake, { passive: true });
     addEventListener('wheel', onWheel, { passive: false });
-    addEventListener('touchmove', onTouch, { passive: false });
     addEventListener('keydown', onKey);
     addEventListener('scroll', onScroll, { passive: true });
     onScroll();
     return () => {
       removeEventListener('pointerdown', wake); removeEventListener('wheel', onWheel);
-      removeEventListener('touchmove', onTouch); removeEventListener('keydown', onKey);
+      removeEventListener('keydown', onKey);
       removeEventListener('scroll', onScroll);
     };
   }, [nudge, go, togglePower]);

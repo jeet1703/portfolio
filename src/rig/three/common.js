@@ -1,12 +1,14 @@
 import * as THREE from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { rig } from '../bus';
 
 export function makeRenderer(host) {
-  const r = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-  r.setPixelRatio(Math.min(1.5, devicePixelRatio));
+  const r = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: rig.touch ? 'low-power' : 'default' });
+  // phones: lower resolution and no shadow maps, the biggest GPU costs here
+  r.setPixelRatio(Math.min(rig.touch ? 1.25 : 1.5, devicePixelRatio));
   r.outputColorSpace = THREE.SRGBColorSpace;
   r.toneMapping = THREE.ACESFilmicToneMapping; r.toneMappingExposure = 1.05;
-  r.shadowMap.enabled = true; r.shadowMap.type = THREE.PCFShadowMap;
+  r.shadowMap.enabled = !rig.touch; r.shadowMap.type = THREE.PCFShadowMap;
   host.appendChild(r.domElement);
   return r;
 }
