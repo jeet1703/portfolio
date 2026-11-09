@@ -217,14 +217,14 @@ body.on .psu .fan2{animation:spin .6s linear infinite}
 .key:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
 #kb3d{display:none;margin-top:14px;width:100%;position:relative}
 #kb3d canvas{display:block;width:100%;height:100%;touch-action:pan-y}
-body.has3d #kb3d{display:block}
-body.has3d .keyboard{position:absolute!important;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);padding:0;margin:0}
+.k3d #kb3d{display:block}
+.k3d .keyboard{position:absolute!important;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);padding:0;margin:0}
 /* smaller keyboard: it sits on a narrower desk instead of filling the page */
 .kb-desk{max-width:820px;margin:0 auto}
 .kb-stage{position:relative}
 /* hand-drawn "click the keys" cue: a sketchy cursor keeps tapping the first key */
 .kcue{position:absolute;left:60px;top:36px;width:0;height:0;pointer-events:none;z-index:3;--hand:'Caveat',cursive}
-body:not(.has3d) .kcue{top:30px;left:44px}
+.kb-desk:not(.k3d) .kcue{top:58px;left:50px}
 .kc-cursor{position:absolute;left:-4px;top:-4px;overflow:visible;transform-origin:4px 4px;animation:kcTap 1.6s cubic-bezier(.5,0,.3,1) infinite}
 .kc-cursor path{fill:var(--paper);stroke:var(--accent-d);stroke-width:2.6;stroke-linejoin:round;stroke-linecap:round;
   stroke-dasharray:140;stroke-dashoffset:140;animation:kcDraw .9s ease-out .2s forwards}
@@ -401,10 +401,14 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
   .mousepad{position:relative;top:0}
   .thumbs{gap:7px}
   .seg,.status{display:none}
+  .dock{display:none} /* the mini mouse + LCD aren't useful on phones */
   nav.top{padding:0 18px}
-  .krow{flex-wrap:wrap}
-  .key{flex:1 1 30%;height:54px}
-  .key.space{flex-basis:100%}
+  /* phones: the flat keyboard becomes a compact 3-column grid */
+  .keyboard{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px 7px;padding:12px;border-radius:14px}
+  .krow{display:contents}
+  .key{height:48px;padding:6px 8px;font-size:11.5px;border-radius:7px}
+  .key small{font-size:8.5px}
+  .key.space{grid-column:1/-1}
   .keyboard{transform:none}
   .rails{padding:0;gap:44px}.rail::after,.jack i{display:none}
   .rail::before,.jack{height:6px;top:30px}
@@ -416,6 +420,12 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
   .monitor-screen{padding:24px 20px}
   .post{padding:24px 18px;font-size:12.5px}
   .post .row{grid-template-columns:1fr}
+}
+/* touch devices: dim with opacity only. Filters on big sections and over 3D canvases are costly on phones */
+@media (pointer:coarse){
+  .powerable:not(.live),.dev:not(.rail):not(.on),.rail:not(.on){filter:none}
+  .powerable.live h2,.dev.on:not(.rail),.rail.on,.powerable.live .kb-screen,.powerable.live .post,.powerable.live .meter{animation:none}
+  .powerable::after{display:none}
 }
 @media (prefers-reduced-motion:reduce){
   *{animation:none!important;transition:none!important}

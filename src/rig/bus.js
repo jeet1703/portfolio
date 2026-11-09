@@ -2,6 +2,8 @@
 export const rig = {
   powered: false,
   reduce: typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches,
+  // phones/tablets: lighter rendering, and touch scrolling is never held back by the wire
+  touch: typeof matchMedia !== 'undefined' && matchMedia('(pointer: coarse)').matches,
   cableStart: null,          // set by the PSU scene: () => {x,y,w} in page px
   rebuildCable: () => {},    // set by <Cable/>
   // scroll steering: where the visitor wants to be. The page follows it, but never past the
