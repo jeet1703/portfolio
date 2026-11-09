@@ -422,8 +422,13 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
   .dock .lcd{display:none}
   .rail{padding:20px}
   .monitor-screen{padding:24px 20px}
-  .post{padding:24px 18px;font-size:12.5px}
-  .post .row{grid-template-columns:1fr}
+  /* phones: each check is one tight unit (label, then its result right-aligned), rows divided */
+  .post{padding:20px 16px;font-size:12.5px;line-height:1.45}
+  .post .hdr{flex-direction:column;gap:2px;padding-bottom:10px;margin-bottom:4px}
+  .post .row{display:flex;flex-wrap:wrap;justify-content:space-between;column-gap:12px;row-gap:3px;padding:9px 0;border-bottom:1px dashed #23351f}
+  .post .row .st{margin-left:auto;text-align:right}
+  .post .foot{margin-top:14px}
+  .rail .when{text-align:left}
 }
 /* touch devices: dim with opacity only. Filters on big sections and over 3D canvases are costly on phones */
 @media (pointer:coarse){
