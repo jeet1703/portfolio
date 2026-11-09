@@ -85,7 +85,7 @@ export default function Projects({ live, on, has3d, apiRef }) {
 }
 
 function Media({ m }) {
-  if (m.type === 'video') return <video src={m.src} muted loop playsInline autoPlay />;
+  if (m.type === 'video') return m.poster ? <img src={m.poster} alt={m.title} /> : <video src={m.src} muted loop playsInline />;
   return <img src={m.src} alt={m.title} />;
 }
 
@@ -129,9 +129,9 @@ function Player({ pr }) {
           drawScene(m.scene, c, c.getContext('2d'), s.t);
           bar.current.style.width = (s.t / dur * 100) + '%';
           time.current.textContent = mmss(s.t) + ' / ' + mmss(dur);
-        } else if (v && v.duration) {
+        } else if (v && isFinite(v.duration) && v.duration > 0) {
           bar.current.style.width = (v.currentTime / v.duration * 100) + '%';
-          time.current.textContent = Math.floor(v.currentTime) + 's';
+          time.current.textContent = mmss(v.currentTime) + ' / ' + mmss(v.duration);
         }
       }
       raf = requestAnimationFrame(loop);
@@ -152,10 +152,10 @@ function Player({ pr }) {
       <div className={'player' + (playing ? '' : ' paused')} ref={el} tabIndex={-1}>
         <div className="pl-stage" onClick={toggle}>
           {m.scene ? <canvas ref={canvas} key={clip} /> : (m.type === 'video'
-            ? <video ref={video} key={clip} src={m.src} muted loop playsInline autoPlay />
+            ? <video ref={video} key={clip} src={m.src} poster={m.poster} muted loop playsInline autoPlay preload="metadata" />
             : <img key={clip} src={m.src} alt={m.title + ' screenshot'} />)}
         </div>
-        <div className="pl-badge"><i></i><span>{m.scene ? 'PREVIEW' : m.type === 'video' ? 'DEMO' : 'LIVE SITE'}</span></div>
+        <div className="pl-badge"><i></i><span>{m.scene ? 'PREVIEW' : m.href ? 'LIVE SITE' : 'DEMO'}</span></div>
         <div className="pl-title">{m.title}</div>
         {m.href && <a className="pl-visit" href={m.href} target="_blank" rel="noopener">Open live site ↗</a>}
         <button className="pl-big" aria-label="Play" onClick={() => { S.click(); setPlaying(true); }}>▶</button>

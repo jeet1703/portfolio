@@ -90,7 +90,7 @@ export const KEYS = ROWS.flatMap((r, ri) =>
   r.map(([label, kind, detail, cat, w]) => ({ label, kind: kind || '', detail, cat, w: w || '', row: ri })));
 
 /* Each project has clips. A clip is either a live canvas preview ({scene}) or your own media:
-   {title:'Demo', src:'/media/chess-demo.mp4', type:'video'}  or  {title:'Screenshot', src:'/media/webvizion.png', type:'image'} */
+   {title:'Demo', src:'/media/demo.webm', poster:'/media/demo.jpg', type:'video', href:'https://…'}  or  {title:'Screenshot', src:'/media/shot.png', type:'image'} */
 export const PROJECTS = [
   {
     name: 'Chess Arena', kind: 'Live real-time multiplayer chess', tech: ['Node.js', 'Go', 'WebSockets', 'React', 'TypeScript'],
@@ -100,7 +100,10 @@ export const PROJECTS = [
       'Reconnects automatically after a dropped connection, validates on both client and server, and shows clear game-over states.',
     ],
     links: [['Play it live ↗', 'https://chess-prabjeet.netlify.app'], ['GitHub ↗', 'https://github.com/jeet1703/Chess']],
-    media: [{ title: 'Live match', scene: 'chess' }, { title: 'Matchmaking & reconnect', scene: 'match' }],
+    media: [
+      { title: 'Live site', src: '/media/chess.webm', poster: '/media/chess.jpg', type: 'video', href: 'https://chess-prabjeet.netlify.app' },
+      { title: 'Live match', scene: 'chess' }, { title: 'Matchmaking & reconnect', scene: 'match' },
+    ],
   },
   {
     name: 'WebVizion', kind: 'Real User Monitoring backend', tech: ['Java', 'Spring Boot', 'Microservices', 'Docker', 'REST'],
@@ -110,7 +113,10 @@ export const PROJECTS = [
       'Every service is containerized with Docker.',
     ],
     links: [['Live dashboard ↗', 'https://webvizion.netlify.app'], ['Demo app ↗', 'https://webvizion-demo.netlify.app'], ['GitHub ↗', 'https://github.com/jeet1703/webvision']],
-    media: [{ title: 'Monitoring dashboard', scene: 'rum' }, { title: 'Batching pipeline', scene: 'batch' }],
+    media: [
+      { title: 'Live dashboard', src: '/media/webvizion.webm', poster: '/media/webvizion.jpg', type: 'video', href: 'https://webvizion.netlify.app' },
+      { title: 'Monitoring preview', scene: 'rum' }, { title: 'Batching pipeline', scene: 'batch' },
+    ],
   },
   {
     name: 'EquipControl', kind: 'Supervisory control application', tech: ['C++', 'Qt', 'CMake', 'GoogleTest'],
