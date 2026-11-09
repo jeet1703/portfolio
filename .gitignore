@@ -27,3 +27,11 @@ dist-ssr
 Terminal Portfolio.html
 Terminal Portfolio.pdf
 Terminal Portfolio.*
+
+# Local tooling, reference extracts and the old/prototype UI (kept on disk, not in the repo)
+.agents/
+.claude/
+extracted_design/
+extracted_pdf_text.txt
+index2.html
+src/legacy/
