@@ -6,7 +6,7 @@ import S from '../rig/sound';
 
 /** Work out where the CLICK HERE label goes so it never covers the PSU itself. */
 function placeCallout({ sw, box, W, H }) {
-  const LW = W < 420 ? 112 : 136, LH = 44, pad = 6;
+  const LW = W < 420 ? 140 : 156, LH = 48, pad = 6; // room the label needs (it sizes to its text)
   const fits = c => c.x >= pad && c.y >= pad && c.x + LW <= W - pad && c.y + LH <= H - pad;
   const cands = [
     { x: Math.min(W - LW - pad, sw.x - LW / 2), y: box.t - LH - 16 }, // on top of the PSU
@@ -26,7 +26,7 @@ function placeCallout({ sw, box, W, H }) {
   const arrowLong = len > 34;
   return {
     ring: { left: sw.x, top: sw.y },
-    label: { left: c.x, top: c.y, width: LW },
+    label: { left: c.x, top: c.y },
     arrow: arrowLong ? `M${P(ax, ay)} Q${P(qx, qy)} ${P(ex, ey)}` : '',
     head: arrowLong ? `M${head[0]} L${P(ex, ey)} L${head[1]}` : '',
   };
@@ -104,7 +104,7 @@ export default function Hero({ powered, onToggle, nudgeN, has3d }) {
         <div className="psu-wrap">
           <div id="psu3d" ref={host} aria-label="3D power supply. Click it to switch the page on." role="img"></div>
           <div className="psu" aria-hidden="true"><div className="fan2"></div></div>
-          <div className={'bootlog' + (has3d ? ' sr-only' : '')} aria-live="polite">
+          <div className={'bootlog' + (has3d ? ' b3d' : '')} aria-live="polite">
             {lines.map(([a, b]) => <div key={a}>{a} <span className="ok">{b}</span></div>)}
           </div>
           {lay && (

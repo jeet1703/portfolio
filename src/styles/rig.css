@@ -96,6 +96,8 @@ h2{font-size:clamp(34px,5vw,58px);line-height:1.02;font-weight:800;letter-spacin
 .jack{position:absolute;top:30px;width:var(--stub,60px);height:8px;background:var(--jc);border-top:2px solid var(--ink);border-bottom:2px solid var(--ink);pointer-events:none}
 [data-jack=left]>.jack{right:100%}
 [data-jack=right]>.jack{left:100%}
+[data-jack-mid]>.jack{top:calc(50% - 4px)}
+.k3d .kb-stage>.jack i{left:-6px} /* the 3D case's rounded edge sits just inside the frame */
 .jack i{position:absolute;top:-10px;width:26px;height:24px;border-radius:5px;background:#f4f0e6;border:2px solid var(--ink)}
 [data-jack=left]>.jack i{right:4px}
 [data-jack=right]>.jack i{left:4px}
@@ -153,7 +155,7 @@ body.on .clickhere{opacity:0!important}
 .ch-arrow path{fill:none;stroke:var(--accent);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:5 5;animation:march .8s linear infinite}
 .ch-arrow path+path{stroke-dasharray:none;animation:none}
 @keyframes march{to{stroke-dashoffset:-10}}
-.ch-label{position:absolute;display:flex;flex-direction:column;align-items:flex-start;padding:6px 10px;background:var(--paper);border:1.5px solid var(--accent);border-radius:9px;box-shadow:3px 3px 0 var(--accent-d);transform:rotate(-3deg);animation:bob 1.2s ease-in-out infinite}
+.ch-label{position:absolute;width:max-content;white-space:nowrap;display:flex;flex-direction:column;align-items:flex-start;padding:6px 10px;background:var(--paper);border:1.5px solid var(--accent);border-radius:9px;box-shadow:3px 3px 0 var(--accent-d);transform:rotate(-3deg);animation:bob 1.2s ease-in-out infinite}
 .ch-label b{font-family:var(--sans);font-weight:800;font-size:18px;line-height:1;color:var(--accent);white-space:nowrap}
 .ch-label small{font-family:var(--mono);font-size:10.5px;color:var(--ink-2);margin-top:3px;white-space:nowrap}
 .clickhere.nudge .ch-label{animation:shake .5s}
@@ -236,6 +238,8 @@ body.on .psu .fan2{animation:spin .6s linear infinite}
 @keyframes kcDraw{to{stroke-dashoffset:0}}
 @keyframes kcWrite{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
 @keyframes kcWobble{0%,100%{transform:rotate(-7deg)}50%{transform:rotate(-4deg) translateY(-2px)}}
+/* with 3D, the boot log is the 3D terminal on wider screens; phones keep this HTML version */
+@media (min-width:561px){.bootlog.b3d{position:absolute!important;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);padding:0;min-height:0}}
 .sr-only{position:absolute!important;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 .kb-note{font-family:var(--mono);font-size:12.5px;color:var(--muted);margin-top:22px}
 
@@ -393,7 +397,7 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
   .badges{margin-top:16px}
   .sig{padding:14px 16px;font-size:11.5px}
   #mouse3d{height:230px}
-  .bootlog{width:auto;font-size:9.5px;top:0;right:4px}
+  .bootlog{width:auto;font-size:11px;line-height:1.5;top:-6px;right:0;padding:10px 12px;min-height:0;transform:rotate(2deg)}
   .meters{grid-template-columns:repeat(2,1fr)}
   .desk{grid-template-columns:1fr}
   .contact{grid-template-columns:1fr}

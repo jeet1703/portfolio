@@ -96,7 +96,8 @@ function buildPath(start, W) {
           Qq(x, gMid, x + dir * r, gMid); Ln(want - dir * r, gMid); Qq(want, gMid, want, gMid + r);
           x = want; y = gMid + r;
         }
-        const stubY = ct + 34; // the connector stub sits 30-38px below the card top
+        // the connector sits 30-38px below the top of experience cards, and at the middle of devices
+        const stubY = card.dataset.jackMid !== undefined ? ct + card.getBoundingClientRect().height / 2 : ct + 34;
         if (stubY > y) { Ln(x, stubY); y = stubY; }
         exits.push({ el: card, y: stubY });
       });

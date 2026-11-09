@@ -33,13 +33,13 @@ export function createPsu(host, { onToggle, onLayout }) {
   // spec sticker on the front face
   const lc = document.createElement('canvas'); lc.width = 1024; lc.height = 520; const g = lc.getContext('2d');
   g.fillStyle = '#f6f2e8'; g.fillRect(0, 0, 1024, 520);
-  g.fillStyle = '#1d1b18'; g.font = '800 70px "Bricolage Grotesque", sans-serif'; g.fillText('PS-2026', 48, 100);
-  g.fillRect(668, 48, 308, 62); g.fillStyle = '#f6f2e8'; g.font = '700 30px "JetBrains Mono", monospace'; g.fillText('80+ BACKEND', 694, 90);
-  const rowsL = [['AC INPUT', 'coffee, chai'], ['+12V RAIL', 'REST · SOAP APIs'], ['+5V RAIL', 'Kafka · Redis'], ['LOAD TESTED', '45,000 req/hr'], ['MADE IN', 'Delhi NCR, IN']];
+  g.fillStyle = '#1d1b18'; g.font = '800 92px "Bricolage Grotesque", sans-serif'; g.fillText('PS-2026', 44, 112);
+  g.fillRect(640, 44, 340, 76); g.fillStyle = '#f6f2e8'; g.font = '700 38px "JetBrains Mono", monospace'; g.fillText('80+ BACKEND', 662, 96);
+  const rowsL = [['+12V', 'REST APIs'], ['+5V', 'Kafka · Redis'], ['LOAD', '45k req/hr'], ['MADE IN', 'Delhi NCR']];
   rowsL.forEach(([a, b], i) => {
-    const y = 180 + i * 66; g.fillStyle = '#cfc5ae'; g.fillRect(48, y - 46, 928, 2);
-    g.fillStyle = '#2f2b26'; g.font = '600 30px "JetBrains Mono", monospace'; g.textAlign = 'left'; g.fillText(a, 48, y);
-    g.fillStyle = '#1d1b18'; g.font = '700 30px "JetBrains Mono", monospace'; g.textAlign = 'right'; g.fillText(b, 976, y); g.textAlign = 'left';
+    const y = 214 + i * 76; g.fillStyle = '#cfc5ae'; g.fillRect(44, y - 54, 936, 3);
+    g.fillStyle = '#4a443c'; g.font = '700 40px "JetBrains Mono", monospace'; g.textAlign = 'left'; g.fillText(a, 44, y);
+    g.fillStyle = '#1d1b18'; g.font = '700 40px "JetBrains Mono", monospace'; g.textAlign = 'right'; g.fillText(b, 980, y); g.textAlign = 'left';
   });
   g.fillStyle = '#ff5b2e'; g.fillRect(0, 504, 1024, 16);
   const tex = new THREE.CanvasTexture(lc); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 8;
@@ -91,10 +91,13 @@ export function createPsu(host, { onToggle, onLayout }) {
   const screen = new THREE.Mesh(new THREE.PlaneGeometry(2.3, 1.265), screenMat); screen.position.z = .112; term.add(screen);
     const termLight = new THREE.PointLight(0xa6ff8f, 0, 3); termLight.position.set(0, 0, .6); term.add(termLight);
   let bootLines = [], blinkOn = true;
-  const TERM_SCALE = .82, termBase = new THREE.Vector3(-1.7, 1.75, .1);
+  // on phones the boot log is shown as real HTML text instead (3D text that small can't be read)
+  const phone = () => innerWidth <= 560;
+  let TERM_SCALE = .82; const termBase = new THREE.Vector3(-1.7, 1.75, .1);
   // keep the open terminal fully inside the canvas: measure its on-screen box and nudge it in
   function fitTerm() {
     if (!W || !Hh) return;
+    TERM_SCALE = W < 520 ? 1.05 : .82; // phones: as big as fits, so the text can be read
     const base = new THREE.Vector3(-1.7, 1.75, .1), right = new THREE.Vector3(), up = new THREE.Vector3();
     cam.updateMatrixWorld(); right.setFromMatrixColumn(cam.matrixWorld, 0); up.setFromMatrixColumn(cam.matrixWorld, 1);
     const pad = 12;
@@ -119,14 +122,14 @@ export function createPsu(host, { onToggle, onLayout }) {
     tg.fillStyle = '#0b0e0a'; tg.fillRect(0, 0, 640, 352);
     const gr = tg.createRadialGradient(320, 176, 40, 320, 176, 380); gr.addColorStop(0, 'rgba(166,255,143,.08)'); gr.addColorStop(1, 'rgba(0,0,0,.5)');
     tg.fillStyle = gr; tg.fillRect(0, 0, 640, 352);
-    tg.font = '600 15px "JetBrains Mono", monospace'; tg.fillStyle = '#6c8f63'; tg.fillText('PS-2026 · boot', 26, 34);
-    tg.font = '500 19px "JetBrains Mono", monospace';
+    // big, bold text so it stays readable when the terminal is small on a phone
+    tg.font = '700 25px "JetBrains Mono", monospace';
     bootLines.forEach(([a, b], i) => {
-      const y = 70 + i * 36; tg.fillStyle = '#a6ff8f'; tg.fillText(a, 26, y);
-      tg.fillStyle = '#ffffff'; tg.textAlign = 'right'; tg.fillText(b, 614, y); tg.textAlign = 'left';
+      const y = 46 + i * 42; tg.fillStyle = '#a6ff8f'; tg.fillText(a, 22, y);
+      tg.fillStyle = '#ffffff'; tg.textAlign = 'right'; tg.fillText(b, 620, y); tg.textAlign = 'left';
     });
-    if (blinkOn) { tg.fillStyle = '#a6ff8f'; tg.fillRect(26, 70 + bootLines.length * 36 - 16, 11, 20); }
-    tg.fillStyle = 'rgba(0,0,0,.22)'; for (let y = 0; y < 352; y += 3) tg.fillRect(0, y, 640, 1);
+    if (blinkOn) { tg.fillStyle = '#a6ff8f'; tg.fillRect(22, 46 + bootLines.length * 42 - 21, 14, 26); }
+    tg.fillStyle = 'rgba(0,0,0,.14)'; for (let y = 0; y < 352; y += 4) tg.fillRect(0, y, 640, 1);
     ttex.needsUpdate = true;
   }
   drawTerm();
@@ -145,7 +148,9 @@ export function createPsu(host, { onToggle, onLayout }) {
     W = host.clientWidth; Hh = host.clientHeight; if (!W || !Hh) return;
     r.setSize(W, Hh, false); cam.aspect = W / Hh;
     cam.fov = W < 520 ? 34 : 28;
-    cam.position.set(5.6, 4.2, 7.2); cam.lookAt(0, -.15, 0); cam.updateProjectionMatrix();
+    // phones: pull the camera in so the PSU (and its label) fill the frame
+    const near = phone() ? .8 : 1;
+    cam.position.set(5.6 * near, 4.2 * near, 7.2 * near); cam.lookAt(0, -.15, 0); cam.updateProjectionMatrix();
     rig3.updateMatrixWorld(true);
     rig.cableStart = cableStart; rig.rebuildCable();
     // where the switch is, and the screen box of the PSU body (+ fan) for the callout
@@ -225,7 +230,7 @@ export function createPsu(host, { onToggle, onLayout }) {
     } else rig3.scale.set(1, 1, 1);
     // boot terminal rises out of the PSU with a little overshoot
     termOpen += ((on ? 1 : 0) - termOpen) * Math.min(1, dt * (on ? 3.2 : 6));
-    term.visible = termOpen > .02;
+    term.visible = termOpen > .02 && !phone();
     if (term.visible) {
       const e = termOpen * TERM_SCALE, ov = 1 + Math.sin(termOpen * Math.PI) * .12;
       term.scale.set(e * ov, e * ov, e * ov);

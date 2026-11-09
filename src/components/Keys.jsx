@@ -75,7 +75,7 @@ export default function Keys({ live, on, has3d, apiRef }) {
             <div className="cat">{cat}</div>
             <div className="line"><span ref={lineRef}>Press any key.</span> <span className="cursor"></span></div>
           </div>
-          <div className={'kb-stage dev' + (on ? ' on' : '')} id="jack-keys" data-jack="right">
+          <div className={'kb-stage dev' + (on ? ' on' : '')} id="jack-keys" data-jack="right" data-jack-mid="">
             <Jack color="#ff7a52" />
             <div id="kb3d" ref={host} aria-hidden="true"></div>
             <div className="keyboard">

@@ -41,7 +41,7 @@ export default function Projects({ live, on, has3d, apiRef }) {
         <p className="lede">Click the left button on the mouse to go back and the right button to go forward. Pick a clip under the player to see each part of a project. Arrow keys work too.</p>
 
         <div className="desk">
-          <div className={'mousepad dev' + (cue && has3d ? ' cueing' : '') + (on ? ' on' : '')} id="jack-mouse" data-jack="left">
+          <div className={'mousepad dev' + (cue && has3d ? ' cueing' : '') + (on ? ' on' : '')} id="jack-mouse" data-jack="left" data-jack-mid="">
             <Jack color="#7cc4ff" />
             {has3d && (
               <div className="mcue-note" aria-hidden="true">

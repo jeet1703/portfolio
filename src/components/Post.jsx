@@ -21,7 +21,7 @@ export default function Post({ live, on }) {
       <div className="wrap">
         <div className="tag">05 · Power-on self test</div>
         <h2>Everything checks out.</h2>
-        <div className={'post-dev dev' + (on ? ' on' : '')} id="jack-post" data-jack="right">
+        <div className={'post-dev dev' + (on ? ' on' : '')} id="jack-post" data-jack="right" data-jack-mid="">
         <Jack color="#a6ff8f" />
         <div className="post" ref={box}>
           <div className="hdr"><span>PRABHJEET BIOS v26.11 · POST</span><span>CPU: curiosity @ 4.9 GHz</span></div>

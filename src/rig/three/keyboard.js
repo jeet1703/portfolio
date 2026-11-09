@@ -64,7 +64,7 @@ export function createKeyboard(host, keys, { onHover, onPress, onCue }) {
   const ELEV = .92; // camera elevation (radians above the desk)
   function fit() {
     const W = host.clientWidth || 600;
-    const visW = fitted.w * 1.04, visH = fitted.d * Math.sin(ELEV) + .9 * Math.cos(ELEV) + .5;
+    const visW = fitted.w * 1.004, visH = fitted.d * Math.sin(ELEV) + .9 * Math.cos(ELEV) + .5;
     const H = Math.round(W * visH / visW); host.style.height = H + 'px';
     r.setSize(W, H, false); dirty = true;
     cam.left = -visW / 2; cam.right = visW / 2; cam.top = visH / 2; cam.bottom = -visH / 2;
