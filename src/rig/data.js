@@ -106,6 +106,23 @@ export const PROJECTS = [
     ],
   },
   {
+    name: 'SpeedyFix Auto Sales', kind: 'Freelance · online shop for a UK car parts seller',
+    tech: ['React', 'TypeScript', 'Java 21', 'Spring Boot', 'PostgreSQL', 'AI agent', 'PayPal', 'FedEx'],
+    points: [
+      'A complete online shop for a UK engine and parts dealer, built for a freelance client: a React + TypeScript storefront on a Java 21 / Spring Boot 3 REST API with PostgreSQL, stocked with 1,300+ listings imported from their eBay store.',
+      'Enter a reg plate and every part shows whether it fits the car. Search by part name, OE number or engine code, eBay-style shop filters, basket and checkout.',
+      'Built an AI agent that chats with shoppers on every page: it finds the right part, answers “where’s my order?”, delivery and returns questions, and hands over to a person when needed.',
+      'Integrated PayPal payments, FedEx shipping, DVSA vehicle lookup, Google sign-in and more third-party APIs.',
+      'A Seller Hub admin for the client: orders, listings with fitment suggestions, customers, part requests and sales charts, behind JWT sign-in with lockout.',
+    ],
+    links: [['Visit live site ↗', 'https://speedyfixautosales.com/']],
+    media: [
+      { title: 'Storefront', src: '/media/speedyfix.webm', poster: '/media/speedyfix.jpg', type: 'video', href: 'https://speedyfixautosales.com/' },
+      { title: 'Shop & filters', src: '/media/speedyfix-shop.webm', poster: '/media/speedyfix-shop.jpg', type: 'video', href: 'https://speedyfixautosales.com/products' },
+      { title: 'Product & fit check', src: '/media/speedyfix-product.webm', poster: '/media/speedyfix-product.jpg', type: 'video', href: 'https://speedyfixautosales.com/products' },
+    ],
+  },
+  {
     name: 'WebVizion', kind: 'Real User Monitoring backend', tech: ['Java', 'Spring Boot', 'Microservices', 'Docker', 'REST'],
     points: [
       'A microservices backend that takes in performance metrics and client-side errors from real users through REST APIs.',

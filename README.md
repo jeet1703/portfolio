@@ -16,7 +16,7 @@ in Delhi NCR or remote, and can join immediately.
 | Power | 3D power supply | Click it (or the switch) to power the site on; a boot terminal pops up |
 | Experience | Output rails | Samsung Electro-Mechanics, DRDO, Amity; each card switches on when the cable reaches its connector |
 | Skills | 3D keyboard | Every key is a tool I use; click a key (or type a letter) to see where I've used it |
-| Projects | 3D mouse + monitor | Left/right buttons flip through Chess Arena, WebVizion and EquipControl, with live canvas previews |
+| Projects | 3D mouse + monitor | Left/right buttons flip through Chess Arena, SpeedyFix Auto Sales, WebVizion and EquipControl, with live canvas previews |
 | Record | POST screen | LeetCode, hackathons, certifications, running as a power-on self test |
 | Contact | CRT monitor | Lights up when the cable plugs in; press Enter to email me |
 
@@ -25,6 +25,7 @@ Sound is part of it (all synthesised with Web Audio, no audio files), so turn it
 ## Projects featured
 
 - **[Chess Arena](https://chess-prabjeet.netlify.app)**: real-time multiplayer chess with server-side move validation, matchmaking and reconnection. Backend written in both Node.js and Go. ([code](https://github.com/jeet1703/Chess))
+- **[SpeedyFix Auto Sales](https://speedyfixautosales.com/)** (freelance): an online shop for a UK car parts seller. React + TypeScript storefront on a Java 21 / Spring Boot API with PostgreSQL; reg-plate part fitment, eBay-style filters, an AI agent that helps shoppers find parts and track orders, PayPal, FedEx and other API integrations, and a Seller Hub admin.
 - **[WebVizion](https://webvizion.netlify.app)**: a Real User Monitoring backend in Java/Spring Boot microservices; batching and async processing cut network overhead by 80%. ([code](https://github.com/jeet1703/webvision))
 - **EquipControl**: a C++/Qt supervisory control app, built with CMake and tested with GoogleTest. ([code](https://github.com/jeet1703/EquipControl-))
 
